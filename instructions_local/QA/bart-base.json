@@ -1,0 +1,18 @@
+{
+    "name": "bart-base-webis22",
+    "use": true,
+    "input_model_path": "facebook/bart-base",
+    "fine-tune": true,
+    "training_kwargs": {
+        "output_dir": "flow/checkpoints/bart-base-webis22",
+        "logging_dir": "flow/log/bart-base-webis22",
+        "num_train_epochs": 12.5
+    },
+    "trainer_kwargs": {},
+    "test_batch_size": 8,
+    "output_model_path": "models/bart-base-webis22",
+    "notes": [
+        "To be fine-tuned on Webis22."
+    ],
+    "url": "https://huggingface.co/facebook/bart-base"
+}
