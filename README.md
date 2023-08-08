@@ -77,4 +77,24 @@ Best metrics for the subtasks are below.
 
 ## Paper
 
-The official paper will appear soon on [ACL Anthology](https://aclanthology.org). For now there is a submitteed camera ready version in the repo ([John Boy Walton at SemEval-2023 Task 5. An Ensemble Approach to Spoiler Classification and_Retrieval for Clickbait Spoiling](./John%20Boy%20Walton%20at%20SemEval-2023%20Task%205.%20An%20Ensemble%20Approach%20to%20Spoiler%20Classification%20and_Retrieval%20for%20Clickbait%20Spoiling.pdf)).
+The official paper for the solution is now available on ACL Anthology under https://aclanthology.org/2023.semeval-1.289/:
+
+Maksim Shmalts. 2023. John Boy Walton at SemEval-2023 Task 5: An Ensemble Approach to Spoiler Classification and Retrieval for Clickbait Spoiling. _In Proceedings of the 17th International Workshop on Semantic Evaluation (SemEval-2023)_, pages 2100–2106, Toronto, Canada. Association for Computational Linguistics.
+
+## Citing
+
+```bibtex
+@inproceedings{shmalts-2023-john,
+    title = "John Boy Walton at {S}em{E}val-2023 Task 5: An Ensemble Approach to Spoiler Classification and Retrieval for Clickbait Spoiling",
+    author = "Shmalts, Maksim",
+    booktitle = "Proceedings of the 17th International Workshop on Semantic Evaluation (SemEval-2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.semeval-1.289",
+    doi = "10.18653/v1/2023.semeval-1.289",
+    pages = "2100--2106",
+    abstract = "Clickbait spoiling is a task of generating or retrieving a fairly short text with a purpose to satisfy curiosity of a content consumer without their addressing to the document linked to a clickbait post or headline. In this paper we introduce an ensemble approach to clickbait spoiling task at SemEval-2023. The tasks consists of spoiler classification and retrieval on Webis-Clickbait-22 dataset. We show that such an ensemble solution is quite successful at classification, whereas it might perform poorly at retrieval with no additional features. In conclusion we outline our thoughts on possible directions to improving the approach and shape a set of suggestions to the said features.",
+}
+``` 
