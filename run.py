@@ -325,7 +325,7 @@ def run(
 def main():
 
     parser = argparse.ArgumentParser(
-        prog='WebEnsemble',
+        prog='WebSemble',
         description='Ensemble model for SemEval23 Task 5'
     )
 

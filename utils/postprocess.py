@@ -92,7 +92,7 @@ def postprocess_qa(
         offset = entry['offset_mapping']
         offset_starts, offset_ends = [pair[0] for pair in offset], [pair[1] for pair in offset]
 
-        # # go through n_best_size greater logits (from -1 to -n_best_size - 1 with step -1)
+        # go through n_best_size greater logits (from -1 to -n_best_size - 1 with step -1)
         start_indices = np.argsort(start_logits) #[-1: -n_best_size - 1: -1].tolist()
         end_indices = np.argsort(end_logits) #[-1: -n_best_size - 1: -1].tolist()
         for start_index in start_indices:

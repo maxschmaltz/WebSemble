@@ -161,7 +161,7 @@ class WebQATrainingArguments(WebTrainingArgs):
         default=True,
         metadata={'help': 'Whether or not to group together samples of roughly the same length in the training dataset.'}
     )
-    report_to: str or list = field(
+    report_to: str | list = field(
         default='none',
         metadata={'help': 'The list of integrations to report the results and logs to.'}
     )
@@ -255,7 +255,7 @@ class WebClassificationTrainingArguments(WebTrainingArgs):
         default=False,
         metadata={'help': 'Whether or not to group together samples of roughly the same length in the training dataset.'}
     )
-    report_to: str or list = field(
+    report_to: str | list = field(
         default='none',
         metadata={'help': 'The list of integrations to report the results and logs to.'}
     )
