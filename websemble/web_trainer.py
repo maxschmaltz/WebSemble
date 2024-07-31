@@ -1,36 +1,25 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 0
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
-from transformers import TrainingArguments, Trainer, \
-                         AutoModelForQuestionAnswering, AutoModelForSequenceClassification, \
-                         AutoTokenizer, DataCollatorWithPadding
+from transformers import (
+	TrainingArguments,
+	Trainer,
+	AutoModelForQuestionAnswering,
+	AutoModelForSequenceClassification,
+	AutoTokenizer,
+	DataCollatorWithPadding
+)
 import torch
 from dataclasses import dataclass, field
 from datasets import Dataset
 
-from utils.metrics import bleu, accuracy
-from utils.postprocess import postprocess_qa, postprocess_classify
+from websemble.utils.metrics import bleu, accuracy
+from websemble.utils.postprocess import postprocess_qa, postprocess_classify
 
-#endregion
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 DEFAULT_MODEL_NAME = './models/distilbert-base-uncased'
-# DEFAULT_MODEL_NAME = '/WebSemble/models/distilbert-base-uncased'
 
-
-#region BaseModels
 
 @dataclass
 class WebBase:
@@ -70,10 +59,6 @@ class WebTrainer(WebBase):
     def configured(self):
         return PostTrainer(**self.asdict_, **self.kwargs)
 
-#endregion
-
-
-#region TrainingArguments
 
 @dataclass
 class WebQATrainingArguments(WebTrainingArgs):
@@ -263,10 +248,6 @@ class WebClassificationTrainingArguments(WebTrainingArgs):
         default_factory=lambda: {}
     )
 
-#endregion
-
-
-#region Trainers
 
 class PostTrainer(Trainer):
 
@@ -306,7 +287,6 @@ class PostTrainer(Trainer):
 
 # https://huggingface.co/deepset/roberta-base-squad2
 DEFAULT_QA_MODEL_NAME = './models/roberta-base-squad2'
-# DEFAULT_QA_MODEL_NAME = '/WebSemble/models/roberta-base-squad2'
 @dataclass
 class WebQATrainer(WebTrainer):
     
@@ -348,12 +328,10 @@ class WebQATrainer(WebTrainer):
 
 # https://huggingface.co/google/pegasus-xsum
 DEFAULT_S2S_MODEL_NAME = './models/pegasus-xsum'
-# DEFAULT_S2S_MODEL_NAME = '/WebSemble/models/pegasus-xsum'
 
 
 # https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english
 DEFAULT_CLASSIFICATION_MODEL_NAME = './models/distilbert-base-uncased'
-# DEFAULT_CLASSIFICATION_MODEL_NAME = '/WebSemble/models/distilbert-base-uncased'
 @dataclass
 class WebClassificationTrainer(WebTrainer):
 
@@ -391,5 +369,3 @@ class WebClassificationTrainer(WebTrainer):
     kwargs: dict = field(
         default_factory=lambda: {}
     )
-
-#endregion

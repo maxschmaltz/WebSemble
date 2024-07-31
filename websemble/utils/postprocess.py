@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 1
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
 from transformers import EvalPrediction
 import torch
 import numpy as np
@@ -19,12 +7,8 @@ import re
 from collections import OrderedDict
 from random import randint, sample
 
-#endregion
+from websemble.web_trainer import DEVICE
 
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-
-#region Functional
 
 def truncate_logits(tensors, minlen):
     # input: list
@@ -36,20 +20,17 @@ def truncate_logits(tensors, minlen):
             output[i, j] = torch.tensor(logits[:minlen], requires_grad=False)
     return output
 
-    #region TextClassification
 
 def postprocess_classify(dataset, predictions, **_):
 
     # we get either np, or pt tensors
-    if isinstance(predictions, torch.Tensor): predictions = predictions.detach().numpy()
+    if isinstance(predictions, torch.Tensor):
+        predictions = predictions.detach().numpy()
     pred_labels = np.argmax(predictions, axis=1)
 
     references = dataset['label']
     return EvalPrediction(predictions=pred_labels, label_ids=references)
 
-    #endregion
-
-    #region QA
 
 def postprocess_qa(
         dataset,
@@ -84,8 +65,10 @@ def postprocess_qa(
     for start_logits, end_logits, label, entry in zip(all_start_logits, all_end_logits, labels, dataset):
 
         # we get either np, or pt tensors
-        if isinstance(start_logits, torch.Tensor): start_logits = start_logits.detach().numpy()
-        if isinstance(end_logits, torch.Tensor): end_logits = end_logits.detach().numpy()
+        if isinstance(start_logits, torch.Tensor):
+            start_logits = start_logits.detach().numpy()
+        if isinstance(end_logits, torch.Tensor):
+            end_logits = end_logits.detach().numpy()
 
         prelim_predictions = []
 
@@ -232,7 +215,3 @@ def postprocess_top_k(top_k, label):
         rand_indices = sorted(sample(indices, rand_n))
         rand_preds = [pred for i, pred in enumerate(top_k) if i in rand_indices]
         return ', '.join(rand_preds)
-    
-    #endregion
-
-#endregion

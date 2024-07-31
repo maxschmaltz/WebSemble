@@ -1,30 +1,11 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 1
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
 from transformers import AutoTokenizer
-import torch
 import pandas as pd
 import json
 
-from web_trainer import DEFAULT_MODEL_NAME
+from websemble.web_trainer import DEFAULT_MODEL_NAME, DEVICE
 
-#endregion
-
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-
-#region Functional
 
 def read_json(path):
     return [json.loads(i) for i in open(path)]
@@ -140,5 +121,3 @@ def from_squad(
         inputs['end_positions'] = end_positions
 
     return inputs
-
-#endregion

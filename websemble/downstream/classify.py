@@ -1,29 +1,11 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 1
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, pipeline
 import torch
 import os
 
-from web_trainer import *
+from websemble.web_trainer import WebClassificationTrainingArguments, WebClassificationTrainer, DEVICE
 
-#endregion
-
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-
-#region Functional
 
 def fine_tune(instruction, X_train=None, X_dev=None):
     label_mapping = instruction['label_mapping']
@@ -77,5 +59,3 @@ def classify(X_test, classifier):
     return {
         'logits': output['logits']
     } # datasets.Dataset.map() requires the function to return a dict
-
-#endregion

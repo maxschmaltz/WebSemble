@@ -1,44 +1,22 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 0
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
 import torch
 import gc
 import os
 import argparse
 import json
 
-from utils.postprocess import *
-from utils.dataset import compose_datasets
-from web_trainer import *
-from downstream.answer import build_model as build_qa, retrieve_answer
-from downstream.summarize import build_model as build_summarizer, summarize
-from downstream.classify import build_model as build_classifier, classify
+from websemble.utils.postprocess import truncate_logits, postprocess_classify, postprocess_qa, postprocess_top_k
+from websemble.utils.dataset import compose_datasets
+from websemble.web_trainer import DEFAULT_S2S_MODEL_NAME, DEVICE
+from websemble.downstream.answer import build_model as build_qa, retrieve_answer
+from websemble.downstream.summarize import build_model as build_summarizer, summarize
+from websemble.downstream.classify import build_model as build_classifier, classify
 
-#endregion
-
-
-#region Cleanup
 
 def clean_cuda():
     torch.cuda.empty_cache()
     gc.collect()
-
-if torch.cuda.is_available():
-    DEVICE = 'cuda'
-    # torch.cuda.set_per_process_memory_fraction(0.75, 0) # so that torch doesn't allocate the whole RAM
-    clean_cuda()
-else: DEVICE = 'cpu'
 
 
 def cleanup(dir):
@@ -51,9 +29,8 @@ def cleanup(dir):
             dir_name_ = os.path.join(root, dir_name)
             if os.path.exists(dir_name_):
                 os.rmdir(dir_name_)
-    if os.path.exists(dir): os.rmdir(dir)
-
-#endregion
+    if os.path.exists(dir):
+        os.rmdir(dir)
 
 
 def read_instructions(instructions_dir):
@@ -66,8 +43,6 @@ def read_instructions(instructions_dir):
                 instructions.append(instruction)
     return instructions
 
-
-#region Run
 
 def run(
         qa_instructions_dir, 
@@ -97,8 +72,6 @@ def run(
     if mode == 'test' and X_test is None: raise AttributeError('Can\'t test without X_test.')
 
     if not os.path.exists(output_dir): os.mkdir(output_dir)
-
-    #region Summarization
 
     '''
     For classification we will use either summarized texts or titles.
@@ -140,10 +113,6 @@ def run(
             if X_test is not None: X_test.to_json(os.path.join(saved_datasets_dir, 'input.jsonl'))
 
     if DEVICE == 'cuda': clean_cuda()
-
-    #endregion
-
-    #region Classification
 
     '''
     Use ensemble approach to classification; gather logits from each model, calculate mean, then postprocess.
@@ -210,10 +179,6 @@ def run(
             label_path = os.path.join(output_dir, 'labels.json')
             with open(label_path, 'w', encoding='utf8') as l: json.dump(pred_labels, l, indent=4)
 
-    #endregion
-
-    #region QA
-
     '''
     Use ensemble approach to QA; gather logits from each model, truncate / pad, calculate mean, then postprocess.
     '''
@@ -272,10 +237,6 @@ def run(
                 top_k_path = os.path.join(output_dir, 'top_k.json')
                 with open(top_k_path, 'w', encoding='utf8') as k: json.dump(pred_spoilers, k, indent=4)
 
-    #endregion
-
-    #region Finalize
-
     '''
     Retrieve the best spoiler from top-k with predicted labels.
     '''
@@ -315,14 +276,11 @@ def run(
                 json.dump(answer, ans)
                 ans.write('\n')
 
-    #endregion
-
-#endregion
-
-
-#region Executive
 
 def main():
+
+    if DEVICE == 'cuda'():
+        clean_cuda()
 
     parser = argparse.ArgumentParser(
         prog='WebSemble',
@@ -332,7 +290,7 @@ def main():
     parser.add_argument('input_dir', default='./webis22_original')
     parser.add_argument('output_dir', default='./out')
     parser.add_argument('subtask', default='2', choices=['1', '2'])
-    parser.add_argument('-i', '--instructions_dir', required=False, default='/WebSemble/instructions_docker')
+    parser.add_argument('-i', '--instructions_dir', required=False, default='./instructions')
     # parser.add_argument('-i', '--instructions_dir', required=False, default='./instructions_local')
     parser.add_argument('-p', '--preprocess_mode', required=False, default='0', choices=['0', '1', '2'])
     parser.add_argument('-m', '--mode', required=False, default='test', choices=['train', 'test'])
@@ -403,8 +361,6 @@ def main():
     )
 
 
-# EXAMPLE USAGE: % python3 run.py ./webis22_run ./out 2 -i instructions_local -p 1 -s True -save True -save_dir ./webis22_summarized
+# EXAMPLE USAGE: % python3 websemble/run.py ./webis22_run ./out 2 -i instructions -p 1 -s True -save True -save_dir ./webis22_summarized
 if __name__ == '__main__':
     main()
-
-#endregion

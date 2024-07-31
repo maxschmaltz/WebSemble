@@ -1,29 +1,11 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 1
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer, pipeline
 import torch
 import os
 
-from web_trainer import *
+from websemble.web_trainer import WebQATrainingArguments, WebQATrainer, DEVICE
 
-#endregion
-
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-
-#region Functional
 
 def fine_tune(instruction, X_train=None, X_dev=None):
     model = AutoModelForQuestionAnswering.from_pretrained(instruction['input_model_path']).to(DEVICE)
@@ -67,5 +49,3 @@ def retrieve_answer(X_test, qa):
         'start_logits': output['start_logits'],
         'end_logits': output['end_logits']
     } # datasets.Dataset.map() requires the function to return a dict
-
-#endregion

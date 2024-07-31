@@ -1,25 +1,10 @@
 #!/usr/bin/env python3
 
-#region Imports
-
-    #region Import Notice
-
-import os, sys
-ROOT = os.path.dirname(__file__)
-depth = 1
-for _ in range(depth): ROOT = os.path.dirname(ROOT)
-sys.path.append(ROOT)
-
-    #endregion
-
+import os
 from datasets import Dataset
 
-from utils.preprocess import squad_format, from_squad
+from websemble.utils.preprocess import squad_format, from_squad
 
-#endregion
-
-
-#region Functional
 
 def compose_datasets(dir, preprocess_train=True, preprocess_test=True, mode='train'):
 
@@ -71,5 +56,3 @@ def compose_datasets(dir, preprocess_train=True, preprocess_test=True, mode='tra
     else: X_test = Dataset.from_json(test_path) if os.path.exists(test_path) else None
         
     return X_train, X_dev, X_test
-
-#endregion
